@@ -16,13 +16,13 @@ def get_html(url, path):
 with open('links.txt', 'r', encoding = 'utf-8') as f:
     lines = f.readlines()
 
-index = 169   #with this we can restart the download from a given index
+index = 926   #with this we can restart the download from a given index
 while lines[index]:
     save_path = f"html\page_{index//50 + 1}"
-    file_name = f"article_{index+1}"
+    file_name = f"article_{index+1}.html"
     completeName = os.path.join(save_path, file_name)
     get_html(lines[index], completeName)
     index+=1
 
 
-
+#index = 887
