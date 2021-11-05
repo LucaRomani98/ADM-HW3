@@ -4,8 +4,8 @@ from tqdm import tqdm
 import os
 
 
-#for page_index in range(1,400,1):      #only need to run 1 time, comment this block after first run
-#    path = f"html\page_{page_index}"
+#for page_index in range(1,400,1):      #this creates the folders where you store the html
+#    path = f"html\page_{page_index}"   #only need to run 1 time, comment this block after first run
 #    os.mkdir(path)
 
 def get_html(url, path, index):
@@ -18,7 +18,7 @@ def get_html(url, path, index):
 with open('links.txt', 'r', encoding = 'utf-8') as f:
     lines = f.readlines()
 
-index = 4474  #with this we can restart the download from a given index
+index = 17064  #with this we can restart the download from a given index
 while lines[index]:
     save_path = f"html\page_{index//50 + 1}"
     file_name = f"article_{index+1}.html"
