@@ -1,8 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
+from datetime import datetime as dt
 import os
 import re
+import csv
 
 #for page_index in range(1,384,1):       #this creates the folders where you store the html
 #    path = f"tsv\page_{page_index}"     #only need to run 1 time, comment this block after first run
@@ -19,22 +21,31 @@ def parse_info(html_dir, tsv_dir, index):
 
     finder = soup.find(text=re.compile('Episodes:'))
     animeNumEpisode = int(finder.parent.parent.text.split()[-1])
+    
+    finder = soup.find('span', text=re.compile('Aired:').parent.text.split('\n')[2].strip().split(' to ')
+    releaseDate = dt.strptime(finder[0], '%b %d %Y')
 
-    releaseDate = 0
+    if len(finder) == 2:
+        endDate = dt.strptime(finder[1], '%b %d %Y')
+    else:
+        endDate = ''
+    
+    finder = soup.find(text=re.compile('Members '))
+    animeNumMembers = int(finder.parent.parent.text.split()[3].replace(',',''))
 
-    endDate = 0
+    animeScore = float(soup.find('span', itemprop = 'ratingValue').text)
 
-    animeNumMembers = 0
+    animeUsers = int(soup.find('span', itemprop = 'ratingCount').text)
 
-    animeScore = 0
+    finder = soup.find(text=re.compile('Members '))
+    if finder.parent.parent.text.replace('#','').replace('P',' ').split()[1].isnumeric():
+        animeRank = int(finder.parent.parent.text.replace('#','').replace('P',' ').split()[1])
+    else:
+        animeRank = ''
 
-    animeUsers = 0
+    animePopularity = int(soup.find(text=re.compile('Popularity:')).parent.parent.text.replace('#','').split()[-1])
 
-    animeRank = 0
-
-    animePopularity = 0
-
-    animeDescription = ""
+    animeDescription = soup.find('p', itemprop = 'description').text
 
     animeRelated = []
 
@@ -43,6 +54,15 @@ def parse_info(html_dir, tsv_dir, index):
     animeVoices = []
 
     animeStaff = []
+
+    with open(tsv_dir, encoding = 'utd-8', 'w') as tsv:
+        tsv.write(headers()+'\n \n')
+        tsv.write('{}')
+
+
+
+def headers():
+    return "animeTitle\t animeType\t animeNumEpisode\t releaseDate\t endDate\t animeNumMembers\t animeScore\t animeUsers\t animeRank\t animePopularity\t animeDescriptions\t animeRelated\t animeCharacters\t animeVoices\t animeStaff"
 
 
 
