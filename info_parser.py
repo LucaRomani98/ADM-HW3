@@ -1,4 +1,3 @@
-import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 from datetime import datetime as dt
@@ -6,8 +5,12 @@ import os
 import re
 import csv
 
-#for page_index in range(1,384,1):       #this creates the folders where you store the html
-#    path = f"tsv\page_{page_index}"     #only need to run 1 time, comment this block after first run
+
+curr = r"C:\Users\matte\Documents\II Year\ADM\Homework3_ADM\html-20211105T160926Z-001"
+#other = curr + r"/tsv"
+#os.mkdir(other) 
+#for page_index in range(1,384,1):     #this creates the folders where you store the html
+#    path = other+f"/page_{page_index}"     #only need to run 1 time, comment this block after first run
 #    os.mkdir(path)
 
 def parse_info(html_dir, tsv_dir, index):
@@ -79,7 +82,7 @@ def parse_info(html_dir, tsv_dir, index):
                 endDate = dt.strptime(second_date_list[0], '%Y').date()
     row.append(releaseDate)
     row.append(endDate)
-    
+
     try:
         animeNumMembers = int(''.join(re.findall(r'\d+', page_soup.find('span', class_ = "numbers members").text)))
     except ValueError:
@@ -180,14 +183,19 @@ def parse_info(html_dir, tsv_dir, index):
 
     with open(tsv_dir, 'w', encoding = 'utf-8') as tsv:
         tsv_writer = csv.writer(tsv, delimiter=',')
-        tsv_writer.writerow(['animeTitle','animeType','animeNumEpisode','releaseDate','endDate','animeNumMembers','animeScore','animeUsers','animeRank','animePopularity','animeDescriptions','animeRelated','animeCharacters','animeVoices','animeStaff','Url'])
+        #tsv_writer.writerow(['animeTitle','animeType','animeNumEpisode','releaseDate','endDate','animeNumMembers','animeScore','animeUsers','animeRank','animePopularity','animeDescriptions','animeRelated','animeCharacters','animeVoices','animeStaff','Url'])
         tsv_writer.writerow(row)
 
-index = 0                               #with this we can restart the download from a given index
-for index in range(19119):               #number of downloaded html
-    save_path = f"tsv\page_{index//50 + 1}"
-    file_name = f"anime_{index+1}.tsv"
-    directory = f"html\page_{index//50 + 1}\\article_{index+1}.html"
-    completeName = os.path.join(save_path, file_name)
+
+
+#index = 3351 
+index = 0                             
+while index < 19119:
+    if index == 3332:
+        index = 3351         
+    save_path = curr+f"/tsv/page_"+str(index//50+1)
+    file_name = f"/anime_"+str(index+1)+".tsv"
+    directory = curr+f"/html/page_"+str(index//50+1)+"/article_"+str(index+1)+".html"
+    completeName = save_path + file_name
     parse_info(directory, completeName, index)
     index+=1
