@@ -26,7 +26,7 @@ def parse_info(html_dir, tsv_dir, index):
     row.append(animeType)
 
     animeNumEpisode = 0
-    for t in page_soup.find_all('div', class_ ='spaceit_paid'):
+    for t in page_soup.find_all('div', class_ ='spaceit_pad'):
         ep = t.text.split()
         if ep[0] == "Episodes:":
             try:
@@ -35,46 +35,51 @@ def parse_info(html_dir, tsv_dir, index):
                 animeNumEpisode = ''
     row.append(animeNumEpisode)
 
+
     releaseDate = ''
     endDate = ''
-    for i in page_soup.find_all('div', class_ = 'spaceit_paid'):
-        date_content = i.text.split()
-        if date_content[0] == "Aired":
-            date = date_content[1:]
-            if "Not available" in " ".join(date) or "Not Available" in " ".join(date):
-                releaseDate, endDate = '', ''
-            dates_l = []
-            for sr in date:
-                t = re.findall(r'[a-zA-Z]{0,3}[0-9]{0,2}[0-9]{0,4}', sr)
-                dates_l.append(t[0])
-            dates_l = list(filter(None, dates_l))
-            f_l = dates_l
-            s_l = []
-            if 'to' in dates_l:
-                i = dates_l.index('to')
-                f_l = dates_l[i]
-                s_l = dates_l[i+1:]
-            f_counter = len(f_l)
-            s_counter = len(s_l)
-            if f_counter == 3:
-                releaseDate = " ".join(f_l)
-                releaseDate = dt.strptime(releaseDate, '%b %d %Y').date()
-            elif f_counter == 2:
-                releaseDate = " ".join(f_l)
-                releaseDate = dt.strptime(releaseDate, '%b %Y').date()
-            elif f_counter == 1:
-                releaseDate = dt.strptime(f_l[0], '%Y').date()
-            if s_counter == 3:
-                endDate = " ".join(s_l)
-                endDate = dt.strptime(endDate, '%b %d %Y').date()
-            elif s_counter == 2:
-                endDate = " ".join(s_l)
-                endDate = dt.strptime(endDate, '%b %Y').date()
-            elif s_counter == 1:
-                endDate = dt.strptime(s_l[0], '%Y').date()
+    date = page_soup.find_all('div', class_='spaceit_pad')
+    for tag in date:
+        date_info = tag.text.split()
+        if date_info[0] == "Aired:":
+            only_date = date_info[1:]
+            if "Not available" in " ".join(only_date) or "Not Available" in " ".join(only_date):
+                return ['', '']
+            data = []
+            for string in only_date:
+                prova = re.findall(r'[a-zA-Z]{0,3}[0-9]{0,2}[0-9]{0,4}', string)
+                data.append(prova[0])
+            data = list(filter(None, data))
+            first_date_list = data
+            second_date_list = []
+            first_date = ''
+            second_date = ''
+            if 'to' in data:
+                ind = data.index('to')
+                first_date_list = data[:ind]
+                second_date_list = data[ind+1:]
+
+            first_count = len(first_date_list)
+            second_count = len(second_date_list)
+            if first_count == 3:
+                first_date = " ".join(first_date_list)
+                releaseDate = dt.strptime(first_date, '%b %d %Y').date()
+            if first_count == 2:
+                first_date = " ".join(first_date_list)
+                releaseDate = dt.strptime(first_date, '%b %Y').date()
+            if first_count == 1:
+                releaseDate = dt.strptime(first_date_list[0], '%Y').date()
+            if second_count == 3:
+                second_date = " ".join(second_date_list)
+                endDate = dt.strptime(second_date, '%b %d %Y').date()
+            if second_count == 2:
+                second_date = " ".join(second_date_list)
+                endDate = dt.strptime(second_date, '%b %Y').date()
+            if second_count == 1:
+                endDate = dt.strptime(second_date_list[0], '%Y').date()
     row.append(releaseDate)
     row.append(endDate)
-
+    
     try:
         animeNumMembers = int(''.join(re.findall(r'\d+', page_soup.find('span', class_ = "numbers members").text)))
     except ValueError:
@@ -106,14 +111,14 @@ def parse_info(html_dir, tsv_dir, index):
     row.append(animePopularity)
 
     animeDescription = ""
-    synopsis = page_soup.find('p', intemprop = "description")
+    descr = page_soup.find('p', itemprop="description")
     try:
-        if "No synopsis" not in synopsis.text:
-            if synopsis.find('span'):
-                s = synopsis.find('span')
-                animeDescription = synopsis.text.replace(s.text, '')
-            else :
-                animeDescription = synopsis.text
+        if "No synopsis" not in descr.text:
+            if descr.find('span'):
+                span = descr.find('span')
+                animeDescription = descr.text.replace(span.text, '')
+            else:
+                animeDescription = descr.text
         else:
             animeDescription = ''
     except:
@@ -170,12 +175,12 @@ def parse_info(html_dir, tsv_dir, index):
     row.append(animeStaff)
 
 
-    URL = page_soup.find_all('link')[0]['href']
-    row.append(URL)
+    Url = page_soup.find_all('link')[13]['href']
+    row.append(Url)
 
     with open(tsv_dir, 'w', encoding = 'utf-8') as tsv:
-        tsv_writer = csv.writer(tsv, delimiter='\t')
-        tsv_writer.writerow(['animeTitle','animeType','animeNumEpisode','releaseDate','endDate','animeNumMembers','animeScore','animeUsers','animeRank','animePopularity','animeDescriptions','animeRelated','animeCharacters','animeVoices','animeStaff','URL'])
+        tsv_writer = csv.writer(tsv, delimiter=',')
+        tsv_writer.writerow(['animeTitle','animeType','animeNumEpisode','releaseDate','endDate','animeNumMembers','animeScore','animeUsers','animeRank','animePopularity','animeDescriptions','animeRelated','animeCharacters','animeVoices','animeStaff','Url'])
         tsv_writer.writerow(row)
 
 index = 0                               #with this we can restart the download from a given index
