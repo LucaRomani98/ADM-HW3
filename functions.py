@@ -5,6 +5,7 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 import numpy as np
 import nltk
+nltk.download('stopwords')
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
@@ -24,7 +25,7 @@ def preprocess(df):
 
 
     stop_words = set(stopwords.words('english'))
-    no_sw = [w for w in lower if not w in words]
+    no_sw = [w for w in lower if not w in stop_words]
 
     lemmatizer = WordNetLemmatizer()
 

@@ -6,9 +6,9 @@ import re
 import csv
 
 
-curr = r"C:\Users\matte\Documents\II Year\ADM\Homework3_ADM\html-20211105T160926Z-001"
-#other = curr + r"/tsv"
-#os.mkdir(other) 
+
+
+
 #for page_index in range(1,384,1):     #this creates the folders where you store the html
 #    path = other+f"/page_{page_index}"     #only need to run 1 time, comment this block after first run
 #    os.mkdir(path)
@@ -187,15 +187,15 @@ def parse_info(html_dir, tsv_dir, index):
         tsv_writer.writerow(row)
 
 
+    print(index)
 
-#index = 3351 
+
+
 index = 0                             
 while index < 19119:
-    if index == 3332:
-        index = 3351         
-    save_path = curr+f"/tsv/page_"+str(index//50+1)
+    save_path = f"tsv/page_"+str(index//50+1)
     file_name = f"/anime_"+str(index+1)+".tsv"
-    directory = curr+f"/html/page_"+str(index//50+1)+"/article_"+str(index+1)+".html"
+    directory = f"html/page_"+str(index//50+1)+"/article_"+str(index+1)+".html"
     completeName = save_path + file_name
     parse_info(directory, completeName, index)
     index+=1
