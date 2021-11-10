@@ -26,5 +26,6 @@ for i in range(383):
         lista.append(list(pd.read_csv(file, sep=',',nrows=1)))
         #print(lista) 
         #df.append(pd.read_csv(file, header = None, sep=','))
+    print(i)
 df = pd.DataFrame(lista, columns = col)
 df.to_csv("merged.tsv")

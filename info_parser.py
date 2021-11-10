@@ -46,40 +46,39 @@ def parse_info(html_dir, tsv_dir, index):
         date_info = tag.text.split()
         if date_info[0] == "Aired:":
             only_date = date_info[1:]
-            if "Not available" in " ".join(only_date) or "Not Available" in " ".join(only_date):
-                return ['', '']
-            data = []
-            for string in only_date:
-                prova = re.findall(r'[a-zA-Z]{0,3}[0-9]{0,2}[0-9]{0,4}', string)
-                data.append(prova[0])
-            data = list(filter(None, data))
-            first_date_list = data
-            second_date_list = []
-            first_date = ''
-            second_date = ''
-            if 'to' in data:
-                ind = data.index('to')
-                first_date_list = data[:ind]
-                second_date_list = data[ind+1:]
+            if not "Not available" in " ".join(only_date) or "Not Available" in " ".join(only_date):
+                data = []
+                for string in only_date:
+                    prova = re.findall(r'[a-zA-Z]{0,3}[0-9]{0,2}[0-9]{0,4}', string)
+                    data.append(prova[0])
+                data = list(filter(None, data))
+                first_date_list = data
+                second_date_list = []
+                first_date = ''
+                second_date = ''
+                if 'to' in data:
+                    ind = data.index('to')
+                    first_date_list = data[:ind]
+                    second_date_list = data[ind+1:]
 
-            first_count = len(first_date_list)
-            second_count = len(second_date_list)
-            if first_count == 3:
-                first_date = " ".join(first_date_list)
-                releaseDate = dt.strptime(first_date, '%b %d %Y').date()
-            if first_count == 2:
-                first_date = " ".join(first_date_list)
-                releaseDate = dt.strptime(first_date, '%b %Y').date()
-            if first_count == 1:
-                releaseDate = dt.strptime(first_date_list[0], '%Y').date()
-            if second_count == 3:
-                second_date = " ".join(second_date_list)
-                endDate = dt.strptime(second_date, '%b %d %Y').date()
-            if second_count == 2:
-                second_date = " ".join(second_date_list)
-                endDate = dt.strptime(second_date, '%b %Y').date()
-            if second_count == 1:
-                endDate = dt.strptime(second_date_list[0], '%Y').date()
+                first_count = len(first_date_list)
+                second_count = len(second_date_list)
+                if first_count == 3:
+                    first_date = " ".join(first_date_list)
+                    releaseDate = dt.strptime(first_date, '%b %d %Y').date()
+                if first_count == 2:
+                    first_date = " ".join(first_date_list)
+                    releaseDate = dt.strptime(first_date, '%b %Y').date()
+                if first_count == 1:
+                    releaseDate = dt.strptime(first_date_list[0], '%Y').date()
+                if second_count == 3:
+                    second_date = " ".join(second_date_list)
+                    endDate = dt.strptime(second_date, '%b %d %Y').date()
+                if second_count == 2:
+                    second_date = " ".join(second_date_list)
+                    endDate = dt.strptime(second_date, '%b %Y').date()
+                if second_count == 1:
+                    endDate = dt.strptime(second_date_list[0], '%Y').date()
     row.append(releaseDate)
     row.append(endDate)
 
@@ -165,13 +164,15 @@ def parse_info(html_dir, tsv_dir, index):
         staff = staff[1]
     else:
         animeStaff = ''
-        return
+
     staff_s = []
-    for i in staff.find_all('a'):
+    for i in staff:
+        i = i.find('a')
         if ' '.join(i.text.split()) != '':
             staff_s.append(' '.join(i.text.split()))
     staff_t = []
-    for i in staff.find_all('small'):
+    for i in staff:
+        i = i.find('small')
         staff_t.append(i.text)
     for i,j in zip(staff_s, staff_t):
         animeStaff.append([i, j])
@@ -191,7 +192,7 @@ def parse_info(html_dir, tsv_dir, index):
 
 
 
-index = 0                             
+index = 0
 while index < 19119:
     save_path = f"tsv/page_"+str(index//50+1)
     file_name = f"/anime_"+str(index+1)+".tsv"
