@@ -157,33 +157,32 @@ def parse_info(html_dir, tsv_dir, index):
     row.append(animeVoices)
 
     animeStaff = []
-    staff = page_soup.find_all('div', class_ = 'detail-characters-list clearfix')
+    staff = page_soup.find_all('div', class_='detail-characters-list clearfix')
     if len(staff) == 1:
-        staff = staff[0]
+        staff_2 = staff[0]
     elif len(staff) == 2:
-        staff = staff[1]
+        staff_2 = staff[1]
     else:
         animeStaff = ''
 
-    staff_s = []
-    for i in staff:
-        i = i.find('a')
-        if ' '.join(i.text.split()) != '':
-            staff_s.append(' '.join(i.text.split()))
-    staff_t = []
-    for i in staff:
-        i = i.find('small')
-        staff_t.append(i.text)
-    for i,j in zip(staff_s, staff_t):
-        animeStaff.append([i, j])
-    row.append(animeStaff)
+    if len(staff) == 1 or len(staff) == 2:
+        staff_s = []
+        for i in staff_2.find_all('a'):
+            if ' '.join(i.text.split()) != '':
+                staff_s.append(' '.join(i.text.split()))
+        staff_t = []
+        for i in staff_2.find_all('small'):
+            staff_t.append(i.text)
+        for i, j in zip(staff_s, staff_t):
+            animeStaff.append([i, j])
+        row.append(animeStaff)
 
 
     Url = page_soup.find_all('link')[13]['href']
     row.append(Url)
 
     with open(tsv_dir, 'w', encoding = 'utf-8') as tsv:
-        tsv_writer = csv.writer(tsv, delimiter=',')
+        tsv_writer = csv.writer(tsv, delimiter='\t')
         #tsv_writer.writerow(['animeTitle','animeType','animeNumEpisode','releaseDate','endDate','animeNumMembers','animeScore','animeUsers','animeRank','animePopularity','animeDescriptions','animeRelated','animeCharacters','animeVoices','animeStaff','Url'])
         tsv_writer.writerow(row)
 

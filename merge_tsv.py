@@ -23,9 +23,9 @@ for i in range(383):
     all_files = glob.glob(os.path.join((workpath+str(i+1)), "*.tsv"))
     for file in all_files:
         #print(list(pd.read_csv(file, sep=',',nrows=1)))
-        lista.append(list(pd.read_csv(file, sep=',',nrows=1)))
+        lista.append(list(pd.read_csv(file, sep='\t',nrows=1)))
         #print(lista) 
         #df.append(pd.read_csv(file, header = None, sep=','))
     print(i)
 df = pd.DataFrame(lista, columns = col)
-df.to_csv("merged.tsv")
+df.to_csv("merged.tsv", sep='\t')
