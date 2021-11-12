@@ -238,7 +238,7 @@ def similarity(q):
             det_doc = det(doc_tfidf[doc])
             cos_sim += [(prod / (det_q * det_doc))]
         q_result['similarity'] = cos_sim
-        return q_result
+        return q_result.sort_values(by=['similarity'], ascending=False)
         #print(q_result.sort_values(by=['similarity', 'Index'], ascending=False)[['animeTitle', 'AnimeDescriptions', 'Url', 'similarity']].head())
         #return q_result.sort_values(by=['similarity', 'Index'], ascending=False)[['animeTitle', 'AnimeDescriptions', 'Url', 'similarity']].head()
     else:
