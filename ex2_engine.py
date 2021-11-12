@@ -205,9 +205,6 @@ for term in inverted:
         inv_ind[term][t[0]] = t[1]
 
 
-a_file = open(path+r"\test.json", "w")
-json.dump(inv_ind, a_file)
-
 #print(inv_ind)
 def similarity(q):
     ps = PorterStemmer()
