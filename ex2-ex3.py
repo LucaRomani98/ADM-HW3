@@ -231,7 +231,7 @@ def handle_2():
 
 #print('final similarity query dafinition')
 def similarity(q):
-    print('defining final variables')
+    #print('defining final variables')
     #inv_ind = defaultdict(dict)
     dot = lambda x, y : sum(xi*yi for xi, yi in zip(x, y))
     square = lambda x : [v**2 for v in x]
@@ -369,22 +369,21 @@ def norm_df():
 # staff -> score += (1/len(a))*2
 
 
-
 def search(q):
     # execute query
     err = "There aren't documents for each word of this query"
     qs = re.sub('\d', '', q.translate(str.maketrans('', '', string.punctuation)).lower())
     q_result = similarity(qs)
     n_ds = norm_df()
-    #print(n_ds)
     if not isinstance(q_result, str):
         q = q.strip().split()
         q = [w.lower() for w in q]
         # power up of the score
         doc_score = []
-        for doc_id in q_result:
-            score = list(q_result[q_result['Index'] == doc_id]['similarity'])
-            print(score)
+        score = []
+        i = 0
+        for doc_id in q_result['Index']:
+            score.append(q_result[q_result['Index']==doc_id]['similarity'])
             # calculate score
             for w in q:
                 t = list(n_ds[n_ds['Index']==doc_id]['animeTitle'])
@@ -396,33 +395,34 @@ def search(q):
                 d2 = list(n_ds[n_ds['Index']==doc_id]['endDate'])
                 r = list(n_ds[n_ds['Index']==doc_id]['animeRelated'])
                 if t != None and w in t:
-                    score += (1/len(t))*2
+                    score[i] += (1/len(t))*2
                 if ty != None and w in ty:
-                    score += (1/len(ty))*1.5
+                    score[i] += (1/len(ty))*1.5
                 if a != None and w in a:
-                    score += (1/len(a))*2
+                    score[i] += (1/len(a))*2
                 if c != None and w in c:
-                    score += (1/len(c))*1.5
+                    score[i] += (1/len(c))*1.5
                 if v != None and w in v:
-                    score += (1/len(v))
+                    score[i] += (1/len(v))
                 if d1 != None and w in d1:
-                    score += (1/len(d1))
+                    score[i] += (1/len(d1))
                 if d2 != None and w in d2:
-                    score += (1/len(d2))
+                    score[i] += (1/len(d2))
                 if r != None and w in r:
-                    score += (1/len(r))
+                    score[i] += (1/len(r))
                 if w.isnumeric():
-                    if truncate(w) == n_ds[n_ds['Index']==doc_id]['animeRank'].to_list()[0]:
-                        score += 0.5
-                    if truncate(w) == n_ds[n_ds['Index']==doc_id]['animeNumEpisode'].to_list()[0]:
-                        score += 0.5
-                    if truncate(w) == n_ds[n_ds['Index']==doc_id]['animeUsers'].to_list()[0]:
-                        score += 0.5
-                    if round(float(w)) == n_ds[n_ds['Index']==doc_id]['animeScore'].to_list()[0]:
-                        score += 0.5
-                    if round(float(w)) == n_ds[n_ds['Index']==doc_id]['animePopularity'].to_list()[0]:
-                        score += 0.5
+                    if truncate(w) == list(n_ds[n_ds['Index']==doc_id]['animeRank']):
+                        score[i] += 0.5
+                    if truncate(w) == list(n_ds[n_ds['Index']==doc_id]['animeNumEpisode']):
+                        score[i] += 0.5
+                    if truncate(w) == list(n_ds[n_ds['Index']==doc_id]['animeUsers']):
+                        score[i] += 0.5
+                    if round(float(w)) == list(n_ds[n_ds['Index']==doc_id]['animeScore']):
+                        score[i] += 0.5
+                    if round(float(w)) == list(n_ds[n_ds['Index']==doc_id]['animePopularity']):
+                        score[i] += 0.5
             heapq.heappush(doc_score, (score, doc_id))
+            i = i+1
         order_doc_id = [i[1] for i in doc_score]
         order_score = [i[0] for i in doc_score]
         r = pd.DataFrame(q_result[q_result['Index']==order_doc_id[0]][['Index', 'animeTitle', 'animeDescriptions', 'Url']])
@@ -434,5 +434,4 @@ def search(q):
     else:
         return err
 
-
-search("saiyan race")
+#search("saiyan race")
