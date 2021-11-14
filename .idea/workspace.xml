@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="896e03f9-56e6-4440-b776-e236e7c00ddc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/info_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/info_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/main-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/main-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ex2_engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/ex2_engine.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/functions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/main.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/makingDataset.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/merge_tsv.py" beforeDir="false" afterPath="$PROJECT_DIR$/merge_tsv.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/merged.tsv" beforeDir="false" afterPath="$PROJECT_DIR$/merged.tsv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,9 +36,30 @@
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/merge_tsv.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/ex2_engine.py" />
   </component>
   <component name="RunManager" selected="Python.merge_tsv">
+    <configuration name="ex2_engine" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\Luca Romani\AppData\Local\Microsoft\WindowsApps\python3.9.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ex2_engine.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="info_parser" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -106,6 +127,7 @@
       <item itemvalue="Python.info_parser2" />
       <item itemvalue="Python.info_parser" />
       <item itemvalue="Python.merge_tsv" />
+      <item itemvalue="Python.ex2_engine" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />

@@ -9,29 +9,43 @@ import json
 from collections import defaultdict
 import nltk
 import re
-import heapq
 import math
 import string
 from datetime import datetime as dt
 import numpy as np
-from scipy.optimize import curve_fit
 from collections import defaultdict
 from collections import Counter
 from bs4 import BeautifulSoup
-from langdetect import detect
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
-import matplotlib.pyplot as plt
 from PyDictionary import PyDictionary
 dictionary=PyDictionary()
 import heapq
 from tqdm import tqdm
 
-from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
-path = r"C:\Users\matte\Documents\II Year\ADM\Homework3_ADM\html-20211105T160926Z-001"
+path = r"C:\Users\Luca Romani\Desktop\Repositories\ADM-HW3"
+
+def create_txt():
+    anime = []
+
+    for page in tqdm(range(0, 400)):
+        url = 'https://myanimelist.net/topanime.php?limit=' + str(page * 50)
+        response = requests.get(url)
+
+        soup = BeautifulSoup(response.text, 'html.parser')
+        for tag in soup.find_all('tr'):
+            links = tag.find_all('a')
+            for link in links:        
+                if type(link.get('id')) == str and len(link.contents[0]) > 1:
+                    anime.append((link.contents[0], link.get('href')) )
+
+    with open('links.txt', 'w', encoding = 'utf-8') as f:
+        for el in anime:
+            f.write(str(el[1])+'\n')
+            
 
 def get_html(url, path, index):
     req = requests.get(url)
@@ -42,13 +56,13 @@ def get_html(url, path, index):
     
     
     
-def download_pages():
+def download_pages(index = 0):
     for page_index in range(1,400,1):
         p_p = path +r'\html\page_'+{page_index}
         os.mkdir(p_p)
     with open('links.txt', 'r', encoding = 'utf-8') as f:
         lines = f.readlines()
-        index = 0  #with this we can restart the download from a given index
+         
         while lines[index]:
             save_path = f"html\page_{index//50 + 1}"
             file_name = f"article_{index+1}.html"
@@ -232,11 +246,11 @@ def parse_info(html_dir, tsv_dir, index):
     print(index)
 
 
-def parse_pages():
-    for page_index in range(1,384,1):     
-        page_d = path+r'\page_'+page_index        
-        os.mkdir(page_d)
-    index = 0
+def parse_pages(index = 0):
+    if not os.path.exists(path+r'\html\page_1'):
+        for page_index in range(1,384,1):     
+            page_d = path+r'\page_'+page_index        
+            os.mkdir(page_d)
     while index < 19119:
         save_path = f"tsv/page_"+str(index//50+1)
         file_name = f"/anime_"+str(index+1)+".tsv"
@@ -323,9 +337,10 @@ def handle():
 
 #defining first query
 
-def query(q):
+def query(q, n=5):
     ds = pd.read_csv(path+'\merged.tsv', sep='\t')
     ds.rename(columns={'Unnamed: 0': 'Index'}, inplace=True)
+    ds.Index = range(1,19120,1)
     #print('First query started, checking vocabulary and dictionary')
     voc, dt = handle()
     #print('Ok')
@@ -344,12 +359,9 @@ def query(q):
     # matching documents
     if len(term):
         doc = set(dt[term[0]])
-        for i in range(1, len(term)):
+        for i in range(len(term)):
             doc = doc.intersection(dt[term[i]])
-        # take row from books
-        #print('Checking result')
-        #print(ds[ds['Index'].isin(list(doc))][['Index','animeTitle', 'animeDescriptions', 'Url']].head())
-        return ds[ds['Index'].isin(list(doc))][['Index','animeTitle', 'animeDescriptions', 'Url']]
+        return ds[ds['Index'].isin(list(doc))][['Index','animeTitle', 'animeDescriptions', 'Url']].head(n)
     else:
         return "There aren't documents for each word of this query"
 
@@ -639,10 +651,17 @@ def search(q):
         r = pd.DataFrame(q_result[q_result['Index']==order_doc_id[0]][['Index', 'animeTitle', 'animeDescriptions', 'Url']])
         for d_id in range(1, len(order_doc_id)):
             r = r.append(q_result[q_result['Index']==order_doc_id[d_id]][['Index', 'animeTitle', 'animeDescriptions', 'Url']])
-        r['score'] = order_score
-        print(r[['Index', 'animeTitle', 'animeDescriptions', 'Url', 'score']].head())
+        r['score'] = create_list(order_score[0])
         return r[['Index', 'animeTitle', 'animeDescriptions', 'Url', 'score']].head()
     else:
         return err
 
-#search("saiyan race")
+def create_list(order_score):  #this creates a better visualization of the list
+    output = []
+    for elem in order_score:
+        output.append(float(str(elem).split()[1]))
+    return output
+
+
+
+
